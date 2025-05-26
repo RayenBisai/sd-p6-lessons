@@ -87,5 +87,26 @@ function savePurchase(array $inputs):bool
     return $sth->execute();
 }
 
+function checkLogin($inputs):string 
+{
+global $pdo;
 
+$sql = 'SELECT * FROM `user` WHERE `email` = :e AND `password` = :p';
+$sth = $pdo->prepare($sql);
+$sth->bindParam(':e', $inputs['email']);
+$sth ->bindParam(':p', $inputs['password']);
+$sth->setFetchMode(PDO::FETCH_CLASS, 'User');
+$sth->execute();
+$user = $sth->fetch();
+var_dump($user);
 
+if(user!==false)
+{
+    $_SESSION['user']=$user;
+    if($_SESSION['user']->role=='admin')
+    {
+        return 'ADMIN';
+    }
+}
+return 'FAILURE';
+}
